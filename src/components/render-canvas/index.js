@@ -1,7 +1,7 @@
 import React from 'react';
 import Canvas from 'utils/CanvasTools';
 
-class RenderCanvas extends React.Component {
+class Renderer extends React.Component {
     constructor(props) {
         super(props);
         
@@ -19,16 +19,24 @@ class RenderCanvas extends React.Component {
 
         context2d.fillRect(...rect);
 
-        const intervalId = setInterval(() => {
-            canvas.width = canvas.width;
+        const moveObject = () => {
+            context2d.clearRect(0, 0, canvas.width, canvas.height);
             rect[0] += 1;
             rect[1] += 1;
             context2d.fillRect(...rect);
-            if (rect[0] === objectDestination[0] && rect[1] === objectDestination[1]) {
-                clearInterval(intervalId);
-            }
-        }, 1);
+        };
+
+        const loopMoveObject = () => {
+            requestAnimationFrame(() => {
+                moveObject();
+                if (!(rect[0] === objectDestination[0] && rect[1] === objectDestination[1])) {
+                    loopMoveObject();
+                }
+            }, 1);
+        };
+
+        loopMoveObject();
     }
 }
 
-export default RenderCanvas;
+export default Renderer;
